@@ -39,9 +39,18 @@
 <body>
   <div class="header"><h1>Outil de Mise à l'Échelle</h1></div>
   <div class="card">
-    <div class="input-group"><label for="ref">Taille de référence</label><input type="number" id="ref" value="100" onfocus="this.select()"></div>
-    <div class="input-group"><label for="target">Taille cible</label><input type="number" id="target" value="150" onfocus="this.select()"></div>
-    <div class="input-group"><label for="extra">Valeurs personnalisées (une par ligne)</label><textarea id="extra" rows="4" placeholder="12.5&#10;35&#10;60"></textarea></div>
+    <div class="input-group">
+      <label for="target">Taille de référence</label>
+      <input type="number" id="target" value="100" onfocus="this.select()">
+    </div>
+    <div class="input-group">
+      <label for="ref">Taille affichée</label>
+      <input type="number" id="ref" value="150" onfocus="this.select()">
+    </div>
+    <div class="input-group">
+      <label for="extra">Valeurs personnalisées (une par ligne)</label>
+      <textarea id="extra" rows="4" placeholder="12.5&#10;35&#10;60"></textarea>
+    </div>
   </div>
   <div class="result-card" id="resultCard"><div class="transformation-badge" id="transformationBadge"></div><div class="results-content" id="output"></div></div>
   <script>
@@ -87,8 +96,22 @@
         {label:'² (x²)',value:ref*ref},
         {label:'³ (x³)',value:ref*ref*ref}
       ];
+      // Multiples et variations de phi
       const multiplesPhi = Array.from({length:10},(_,i)=>({ label:`${i+1}φ`, value: ref*φ*(i+1) }));
+      const phiExtras = [
+        {label:'√φ', value: ref* Math.sqrt(φ)},
+        {label:'φ²', value: ref* φ*φ},
+        {label:'φ³', value: ref* φ*φ*φ},
+        {label:'1/φ', value: ref/ φ}
+      ];
+      // Multiples et variations de pi
       const multiplesPi = Array.from({length:10},(_,i)=>({ label:`${i+1}π`, value: ref*π*(i+1) }));
+      const piExtras = [
+        {label:'√π', value: ref* Math.sqrt(π)},
+        {label:'π²', value: ref* π*π},
+        {label:'π³', value: ref* π*π*π},
+        {label:'1/π', value: ref/ π}
+      ];
 
       let html = '';
       function renderSection(title, items) {
@@ -107,13 +130,11 @@
       if (extras.length) {
         renderSection('Valeurs personnalisées', extras.map(v=>({label:v,value:v})));
       }
-
-      // Affichage des autres sections
       renderSection('Multiples simples (×1→×10)', multiples);
       renderSection('Pourcentages', pourcentages);
       renderSection('Échelles pratiques', pratiques);
-      renderSection('Multiples de φ (phi)', multiplesPhi);
-      renderSection('Multiples de π (pi)', multiplesPi);
+      renderSection('Multiples de φ (phi)', [...multiplesPhi, ...phiExtras]);
+      renderSection('Multiples de π (pi)', [...multiplesPi, ...piExtras]);
       renderSection('Racines & puissances', [...racines, ...puissances]);
 
       output.innerHTML = html;
