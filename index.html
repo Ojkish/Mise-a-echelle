@@ -1,316 +1,299 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Outil de Mise à l'Échelle</title>
-<style>
-* {
-    box-sizing: border-box;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outil de Mise à l'Échelle</title>
+  <style>
+    * { box-sizing: border-box; }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    min-height: 100vh;
-    line-height: 1.6;
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.header h1 {
-    color: #1e293b;
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-.card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-}
-
-.input-group {
-    margin-bottom: 1.25rem;
-}
-
-.input-group:last-child {
-    margin-bottom: 0;
-}
-
-label {
-    display: block;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-    background: #fafafa;
-}
-
-input:focus, textarea:focus {
-    outline: none;
-    border-color: #2563eb;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-textarea {
-    resize: vertical;
-    font-family: inherit;
-}
-
-.result-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-}
-
-.transformation-badge {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: white;
-    padding: 1.25rem;
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-
-.results-content {
-    padding: 1.5rem;
-}
-
-.section {
-    margin-bottom: 1.5rem;
-}
-
-.section:last-child {
-    margin-bottom: 0;
-}
-
-.section-title {
-    font-weight: 700;
-    color: #374151;
-    margin-bottom: 0.75rem;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.section-title::before {
-    content: '';
-    width: 4px;
-    height: 20px;
-    background: linear-gradient(to bottom, #2563eb, #1d4ed8);
-    border-radius: 2px;
-}
-
-.value-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s ease;
-}
-
-.value-row:hover {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-}
-
-.value-row:last-child {
-    margin-bottom: 0;
-}
-
-.value-original {
-    color: #64748b;
-    font-weight: 500;
-}
-
-.arrow {
-    color: #94a3b8;
-    font-weight: bold;
-    margin: 0 0.5rem;
-}
-
-.value-scaled {
-    font-weight: 700;
-    color: #2563eb;
-    font-size: 1.1rem;
-}
-
-.empty-state {
-    text-align: center;
-    color: #64748b;
-    font-style: italic;
-    padding: 2rem;
-}
-
-/* Responsive */
-@media (max-width: 640px) {
     body {
-        padding: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      min-height: 100vh;
+      line-height: 1.6;
     }
-    
+
+    .header { text-align: center; margin-bottom: 2rem; }
     .header h1 {
-        font-size: 1.75rem;
+      color: #1e293b;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
-    
-    .card, .result-card {
-        padding: 1.25rem;
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(226, 232, 240, 0.8);
     }
-    
+
+    .input-group { margin-bottom: 1.25rem; }
+    .input-group:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: #fafafa;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .result-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      display: none;
+    }
+
     .transformation-badge {
-        font-size: 1.1rem;
-        padding: 1rem;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      padding: 1.25rem;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
-    
+
+    .results-content { padding: 1.5rem; }
+
+    .section { margin-bottom: 1.5rem; }
+    .section:last-child { margin-bottom: 0; }
+
+    .section-title {
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+      border-radius: 2px;
+    }
+
     .value-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+    .value-row:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .value-row:last-child { margin-bottom: 0; }
+
+    .value-original { color: #64748b; font-weight: 500; }
+    .arrow { color: #94a3b8; font-weight: bold; margin: 0 0.5rem; }
+    .value-scaled {
+      font-weight: 700;
+      color: #2563eb;
+      font-size: 1.1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      body { padding: 1rem; }
+      .header h1 { font-size: 1.75rem; }
+      .card, .result-card { padding: 1.25rem; }
+      .transformation-badge { font-size: 1.1rem; padding: 1rem; }
+      .value-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
-    }
-    
-    .arrow {
-        display: none;
-    }
-    
-    .value-scaled {
+      }
+      .arrow { display: none; }
+      .value-scaled {
         align-self: flex-end;
         font-size: 1.2rem;
+      }
     }
-}
-</style>
+  </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Outil de Mise à l'Échelle</h1>
+  <div class="header">
+    <h1>Outil de Mise à l'Échelle</h1>
+  </div>
+
+  <div class="card">
+    <div class="input-group">
+      <label for="ref">Taille de référence</label>
+      <input type="number" id="ref" placeholder="ex : 100" value="100" onfocus="this.select()">
     </div>
-
-    <div class="card">
-        <div class="input-group">
-            <label for="ref">Taille de référence</label>
-            <input type="number" id="ref" placeholder="ex : 100" value="100" onfocus="this.select()">
-        </div>
-        
-        <div class="input-group">
-            <label for="target">Taille cible</label>
-            <input type="number" id="target" placeholder="ex : 150" value="150" onfocus="this.select()">
-        </div>
-        
-        <div class="input-group">
-            <label for="extra">Valeurs personnalisées (une par ligne)</label>
-            <textarea id="extra" rows="4" placeholder="ex : 12.5&#10;35&#10;60"></textarea>
-        </div>
+    <div class="input-group">
+      <label for="target">Taille cible</label>
+      <input type="number" id="target" placeholder="ex : 150" value="150" onfocus="this.select()">
     </div>
-
-    <div class="result-card" id="resultCard" style="display: none;">
-        <div class="transformation-badge" id="transformationBadge"></div>
-        <div class="results-content" id="output"></div>
+    <div class="input-group">
+      <label for="extra">Valeurs personnalisées (une par ligne)</label>
+      <textarea id="extra" rows="4" placeholder="ex : 12.5&#10;35&#10;60"></textarea>
     </div>
+  </div>
 
-    <script>
-        const refInput = document.getElementById('ref');
-        const targetInput = document.getElementById('target');
-        const extraInput = document.getElementById('extra');
-        const output = document.getElementById('output');
-        const resultCard = document.getElementById('resultCard');
-        const transformationBadge = document.getElementById('transformationBadge');
+  <div class="result-card" id="resultCard">
+    <div class="transformation-badge" id="transformationBadge"></div>
+    <div class="results-content" id="output"></div>
+  </div>
 
-        function update() {
-            const ref = parseFloat(refInput.value);
-            const target = parseFloat(targetInput.value);
-            
-            if (!ref || !target || ref <= 0) {
-                resultCard.style.display = 'none';
-                return;
-            }
+  <script>
+    const refInput = document.getElementById('ref');
+    const targetInput = document.getElementById('target');
+    const extraInput = document.getElementById('extra');
+    const output = document.getElementById('output');
+    const resultCard = document.getElementById('resultCard');
+    const transformationBadge = document.getElementById('transformationBadge');
 
-            const factor = target / ref;
-            const percentChange = ((factor - 1) * 100).toFixed(1);
-            
-            // Mise à jour du badge de transformation
-            const sign = percentChange > 0 ? '+' : '';
-            transformationBadge.textContent = `Transformation : ${sign}${percentChange}%`;
-            
-            const predefined = [
-                { label: "¼", value: ref * 0.25 },
-                { label: "½", value: ref * 0.5 },
-                { label: "1×", value: ref },
-                { label: "2×", value: ref * 2 },
-                { label: "3×", value: ref * 3 },
-                { label: "4×", value: ref * 4 }
-            ];
+    function update() {
+      const ref = parseFloat(refInput.value);
+      const target = parseFloat(targetInput.value);
 
-            let html = '<div class="section"><div class="section-title">Valeurs proposées</div>';
-            
-            predefined.forEach(item => {
-                const scaled = (item.value * factor).toFixed(2);
-                html += `
-                    <div class="value-row">
-                        <span class="value-original">${item.label} : ${item.value.toFixed(2)}</span>
-                        <span class="arrow">→</span>
-                        <span class="value-scaled">${scaled}</span>
-                    </div>
-                `;
-            });
-            html += '</div>';
+      if (!ref || !target || ref <= 0) {
+        resultCard.style.display = 'none';
+        return;
+      }
 
-            const extras = extraInput.value.split('\n')
-                .map(line => parseFloat(line.trim()))
-                .filter(val => !isNaN(val));
+      const factor = target / ref;
+      // Affichage du facteur en %, 3 décimales
+      const percentDisplay = (factor * 100).toFixed(3);
+      transformationBadge.textContent = `Transformation : ${percentDisplay}%`;
 
-            if (extras.length > 0) {
-                html += '<div class="section"><div class="section-title">Valeurs personnalisées</div>';
-                extras.forEach(val => {
-                    const scaled = (val * factor).toFixed(2);
-                    html += `
-                        <div class="value-row">
-                            <span class="value-original">${val}</span>
-                            <span class="arrow">→</span>
-                            <span class="value-scaled">${scaled}</span>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-            }
+      // 1. Échelles de base : ⅛ → ×10
+      const basicScales = [
+        { label: "⅛",   value: ref * 0.125 },
+        { label: "¼",   value: ref * 0.25 },
+        { label: "⅓",   value: ref * (1/3) },
+        { label: "½",   value: ref * 0.5 },
+        { label: "1×",  value: ref },
+        { label: "2×",  value: ref * 2 },
+        { label: "3×",  value: ref * 3 },
+        { label: "4×",  value: ref * 4 },
+        { label: "5×",  value: ref * 5 },
+        { label: "6×",  value: ref * 6 },
+        { label: "7×",  value: ref * 7 },
+        { label: "8×",  value: ref * 8 },
+        { label: "9×",  value: ref * 9 },
+        { label: "10×", value: ref * 10 }
+      ];
 
-            output.innerHTML = html;
-            resultCard.style.display = 'block';
-        }
+      // 2. Constantes mathématiques
+      const φ = (1 + Math.sqrt(5)) / 2;
+      const π = Math.PI;
+      const sqrt2 = Math.SQRT2;
 
-        refInput.addEventListener('input', update);
-        targetInput.addEventListener('input', update);
-        extraInput.addEventListener('input', update);
-        
-        window.onload = update;
-    </script>
+      const constantScales = [
+        { label: "×φ (1,618)",   value: ref * φ },
+        { label: "×1/φ (0,618)", value: ref / φ },
+        { label: "×φ² (2,618)",  value: ref * φ * φ },
+        { label: "×π (3,142)",   value: ref * π },
+        { label: "×1/π (0,318)", value: ref / π },
+        { label: "×√2 (1,414)",  value: ref * sqrt2 }
+      ];
+
+      // Construction du HTML
+      let html = "";
+
+      // Section 1 : échelles de base
+      html += '<div class="section"><div class="section-title">Échelles de base (⅛ → 10×)</div>';
+      basicScales.forEach(item => {
+        const scaled = (item.value * factor).toFixed(2);
+        html += `
+          <div class="value-row">
+            <span class="value-original">${item.label}</span>
+            <span class="arrow">→</span>
+            <span class="value-scaled">${scaled}</span>
+          </div>
+        `;
+      });
+      html += '</div>';
+
+      // Section 2 : constantes mathématiques
+      html += '<div class="section"><div class="section-title">Constantes mathématiques</div>';
+      constantScales.forEach(item => {
+        const scaled = (item.value * factor).toFixed(2);
+        html += `
+          <div class="value-row">
+            <span class="value-original">${item.label}</span>
+            <span class="arrow">→</span>
+            <span class="value-scaled">${scaled}</span>
+          </div>
+        `;
+      });
+      html += '</div>';
+
+      // Section 3 : valeurs personnalisées
+      const extras = extraInput.value.split('\n')
+        .map(line => parseFloat(line.trim()))
+        .filter(val => !isNaN(val));
+
+      if (extras.length > 0) {
+        html += '<div class="section"><div class="section-title">Valeurs personnalisées</div>';
+        extras.forEach(val => {
+          const scaled = (val * factor).toFixed(2);
+          html += `
+            <div class="value-row">
+              <span class="value-original">${val}</span>
+              <span class="arrow">→</span>
+              <span class="value-scaled">${scaled}</span>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      output.innerHTML = html;
+      resultCard.style.display = 'block';
+    }
+
+    refInput.addEventListener('input', update);
+    targetInput.addEventListener('input', update);
+    extraInput.addEventListener('input', update);
+    window.onload = update;
+  </script>
 </body>
 </html>
