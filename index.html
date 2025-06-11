@@ -41,11 +41,11 @@
   <div class="card">
     <div class="input-group">
       <label for="target">Taille de référence</label>
-      <input type="number" id="target" value="100" onfocus="this.select()">
+      <input type="number" id="target" value="150" onfocus="this.select()">
     </div>
     <div class="input-group">
       <label for="ref">Taille affichée</label>
-      <input type="number" id="ref" value="150" onfocus="this.select()">
+      <input type="number" id="ref" value="100" onfocus="this.select()">
     </div>
     <div class="input-group">
       <label for="extra">Valeurs personnalisées (une par ligne)</label>
@@ -74,43 +74,53 @@
         .filter(v => !isNaN(v));
 
       // Définition des catégories d'échelles
-      const multiples = Array.from({length:10},(_,i)=>({ label:`${i+1}×`, value: ref*(i+1) }));
+      const fractions = [
+        { label: '1/20', value: ref / 20 },
+        { label: '1/10', value: ref / 10 },
+        { label: '1/8',  value: ref / 8  },
+        { label: '1/4',  value: ref / 4  },
+        { label: '1/2',  value: ref / 2  }
+      ];
+      const multiples = Array.from({ length: 10 }, (_, i) => ({ label: `${i+1}×`, value: ref * (i + 1) }));
       const pourcentages = [
-        {label:'25%',value:ref*0.25},{label:'50%',value:ref*0.5},
-        {label:'75%',value:ref*0.75},{label:'100%',value:ref},
-        {label:'125%',value:ref*1.25},{label:'150%',value:ref*1.5},
-        {label:'200%',value:ref*2}
+        { label: '25%',  value: ref * 0.25 },
+        { label: '50%',  value: ref * 0.5  },
+        { label: '75%',  value: ref * 0.75 },
+        { label: '100%', value: ref       },
+        { label: '125%', value: ref * 1.25 },
+        { label: '150%', value: ref * 1.5  },
+        { label: '200%', value: ref * 2    }
       ];
       const pratiques = [
-        {label:'1/25',value:ref/25},{label:'1/50',value:ref/50},
-        {label:'1/75',value:ref/75},{label:'1/3',value:ref/3},
-        {label:'2/3',value:ref*(2/3)}
+        { label: '1/25', value: ref / 25 },
+        { label: '1/50', value: ref / 50 },
+        { label: '1/75', value: ref / 75 },
+        { label: '1/3',  value: ref / 3  },
+        { label: '2/3',  value: ref * 2/3 }
       ];
-      const φ = (1+Math.sqrt(5))/2;
+      const φ = (1 + Math.sqrt(5)) / 2;
       const π = Math.PI;
       const racines = [
-        {label:'√2',value:ref*Math.SQRT2},
-        {label:'√3',value:ref*Math.sqrt(3)}
+        { label: '√2', value: ref * Math.SQRT2 },
+        { label: '√3', value: ref * Math.sqrt(3) }
       ];
       const puissances = [
-        {label:'² (x²)',value:ref*ref},
-        {label:'³ (x³)',value:ref*ref*ref}
+        { label: '² (x²)', value: ref * ref     },
+        { label: '³ (x³)', value: ref * ref * ref }
       ];
-      // Multiples et variations de phi
-      const multiplesPhi = Array.from({length:10},(_,i)=>({ label:`${i+1}φ`, value: ref*φ*(i+1) }));
+      const multiplesPhi = Array.from({ length: 10 }, (_, i) => ({ label: `${i+1}φ`, value: ref * φ * (i+1) }));
       const phiExtras = [
-        {label:'√φ', value: ref* Math.sqrt(φ)},
-        {label:'φ²', value: ref* φ*φ},
-        {label:'φ³', value: ref* φ*φ*φ},
-        {label:'1/φ', value: ref/ φ}
+        { label: '√φ',  value: ref * Math.sqrt(φ) },
+        { label: 'φ²',  value: ref * φ * φ       },
+        { label: 'φ³',  value: ref * φ * φ * φ   },
+        { label: '1/φ', value: ref / φ           }
       ];
-      // Multiples et variations de pi
-      const multiplesPi = Array.from({length:10},(_,i)=>({ label:`${i+1}π`, value: ref*π*(i+1) }));
+      const multiplesPi = Array.from({ length: 10 }, (_, i) => ({ label: `${i+1}π`, value: ref * π * (i+1) }));
       const piExtras = [
-        {label:'√π', value: ref* Math.sqrt(π)},
-        {label:'π²', value: ref* π*π},
-        {label:'π³', value: ref* π*π*π},
-        {label:'1/π', value: ref/ π}
+        { label: '√π',  value: ref * Math.sqrt(π) },
+        { label: 'π²',  value: ref * π * π       },
+        { label: 'π³',  value: ref * π * π * π   },
+        { label: '1/π', value: ref / π           }
       ];
 
       let html = '';
@@ -126,10 +136,11 @@
         html += '</div>';
       }
 
-      // Affichage des valeurs personnalisées en premier si présentes
+      // Sections à afficher
       if (extras.length) {
-        renderSection('Valeurs personnalisées', extras.map(v=>({label:v,value:v})));
+        renderSection('Valeurs personnalisées', extras.map(v => ({ label: v, value: v })));
       }
+      renderSection('Fractions simples', fractions);
       renderSection('Multiples simples (×1→×10)', multiples);
       renderSection('Pourcentages', pourcentages);
       renderSection('Échelles pratiques', pratiques);
