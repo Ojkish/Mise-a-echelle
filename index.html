@@ -44,7 +44,8 @@
       margin-bottom: 0.5rem;
       font-size: 0.95rem;
     }
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       padding: 0.75rem;
       border: 2px solid #e5e7eb;
@@ -52,13 +53,14 @@
       font-size: 1rem;
       transition: all 0.2s ease;
       background: #fafafa;
-
-    /* Activer le clavier numérique sur mobile pour inputs et textarea */
-    input[type="number"], textarea {
+    }
+    input[type="number"],
+    textarea {
       inputmode: decimal;
       pattern: "[0-9]*[.,]?[0-9]*";
-    }    }
-    input:focus, textarea:focus {
+    }
+    input:focus,
+    textarea:focus {
       outline: none;
       border-color: #2563eb;
       background: white;
@@ -72,7 +74,7 @@
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
       border: 1px solid rgba(226,232,240,0.8);
       overflow: hidden;
-      display: none; /* Cachée par défaut */
+      display: none;
     }
     .transformation-badge {
       background: linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
@@ -119,7 +121,6 @@
     .arrow { color: #94a3b8; font-weight: bold; margin: 0 0.5rem; }
     .value-scaled { font-weight: 700; color: #2563eb; font-size: 1.1rem; }
 
-    /* === Adaptation mobile === */
     @media (max-width: 640px) {
       body { padding: 1rem; }
       .header h1 { font-size: 1.75rem; }
@@ -132,37 +133,26 @@
   </style>
 </head>
 <body>
-  <!-- === En-tête de l'application === -->
   <div class="header"><h1>Outil de Mise à l'Échelle</h1></div>
-
-  <!-- === Entrées utilisateur === -->
   <div class="card">
     <div class="input-group">
       <label for="target">Taille de référence</label>
-      <input type="number" id="target" value="100" onfocus="this.select()">
+      <input type="number" id="target" value="100" onfocus="this.select()" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*">
     </div>
     <div class="input-group">
       <label for="ref">Taille affichée</label>
-      <input type="number" id="ref" value="150" onfocus="this.select()">
+      <input type="number" id="ref" value="150" onfocus="this.select()" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*">
     </div>
     <div class="input-group">
       <label for="extra">Valeurs personnalisées (une par ligne)</label>
-      <textarea id="extra" rows="4" placeholder="12.5&#10;35&#10;60"></textarea>
+      <textarea id="extra" rows="4" placeholder="12,5&#10;35&#10;60" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*"></textarea>
     </div>
   </div>
-
-  <!-- === Affichage des résultats (caché par défaut) === -->
   <div class="result-card" id="resultCard">
     <div class="transformation-badge" id="transformationBadge"></div>
     <div class="results-content" id="output"></div>
   </div>
-
   <script>
-    /**
-     * formatFr : formate un nombre en notation française
-     * - minimumFractionDigits: nombre minimal de décimales
-     * - maximumFractionDigits: nombre maximal de décimales
-     */
     function formatFr(value) {
       return value.toLocaleString('fr-FR', {
         minimumFractionDigits: 0,
@@ -170,7 +160,6 @@
       });
     }
 
-    // Sélection des éléments DOM
     const refInput = document.getElementById('ref');
     const targetInput = document.getElementById('target');
     const extraInput = document.getElementById('extra');
@@ -178,33 +167,23 @@
     const resultCard = document.getElementById('resultCard');
     const transformationBadge = document.getElementById('transformationBadge');
 
-    /**
-     * update : fonction principale de recalcul et affichage
-     */
     function update() {
-      // Lecture des valeurs utilisateur
-      const ref = parseFloat(refInput.value);
-      const target = parseFloat(targetInput.value);
-      
-      // Si valeurs invalides, on masque le résultat
+      const ref = parseFloat(refInput.value.replace(',', '.'));
+      const target = parseFloat(targetInput.value.replace(',', '.'));
+
       if (!ref || !target || ref <= 0) {
         resultCard.style.display = 'none';
         return;
       }
 
-      // Calcul du facteur de transformation
       const factor = target / ref;
-
-      // Mise à jour du badge de transformation
       transformationBadge.textContent = `Transformation : ${formatFr(factor * 100)}%`;
 
-      // Lecture et filtrage des valeurs personnalisées
       const extras = extraInput.value
         .split('\n')
-        .map(line => parseFloat(line.trim()))
+        .map(line => parseFloat(line.trim().replace(',', '.')))
         .filter(v => !isNaN(v));
 
-      // Définition des différentes séries géométriques
       const fractions = [
         { label: '1/20', value: ref / 20 },
         { label: '1/10', value: ref / 10 },
@@ -212,7 +191,12 @@
         { label: '1/4',  value: ref / 4  },
         { label: '1/2',  value: ref / 2  }
       ];
-      const multiples = Array.from({ length: 10 }, (_, i) => ({ label: `${i+1}×`, value: ref * (i + 1) }));
+
+      const multiples = Array.from({ length: 10 }, (_, i) => ({
+        label: `${i + 1}×`,
+        value: ref * (i + 1)
+      }));
+
       const pourcentages = [
         { label: '25%',  value: ref * 0.25 },
         { label: '50%',  value: ref * 0.5  },
@@ -222,6 +206,7 @@
         { label: '150%', value: ref * 1.5  },
         { label: '200%', value: ref * 2    }
       ];
+
       const pratiques = [
         { label: '1/25', value: ref / 25 },
         { label: '1/50', value: ref / 50 },
@@ -229,24 +214,37 @@
         { label: '1/3',  value: ref / 3  },
         { label: '2/3',  value: ref * 2/3 }
       ];
+
       const φ = (1 + Math.sqrt(5)) / 2;
       const π = Math.PI;
+
       const racines = [
         { label: '√2', value: ref * Math.SQRT2 },
         { label: '√3', value: ref * Math.sqrt(3) }
       ];
+
       const puissances = [
-        { label: '² (x²)', value: ref * ref     },
+        { label: '² (x²)', value: ref * ref },
         { label: '³ (x³)', value: ref * ref * ref }
       ];
-      const multiplesPhi = Array.from({ length: 10 }, (_, i) => ({ label: `${i+1}φ`, value: ref * φ * (i+1) }));
+
+      const multiplesPhi = Array.from({ length: 10 }, (_, i) => ({
+        label: `${i + 1}φ`,
+        value: ref * φ * (i + 1)
+      }));
+
       const phiExtras = [
         { label: '√φ',  value: ref * Math.sqrt(φ) },
         { label: 'φ²',  value: ref * φ * φ       },
         { label: 'φ³',  value: ref * φ * φ * φ   },
         { label: '1/φ', value: ref / φ           }
       ];
-      const multiplesPi = Array.from({ length: 10 }, (_, i) => ({ label: `${i+1}π`, value: ref * π * (i+1) }));
+
+      const multiplesPi = Array.from({ length: 10 }, (_, i) => ({
+        label: `${i + 1}π`,
+        value: ref * π * (i + 1)
+      }));
+
       const piExtras = [
         { label: '√π',                          value: ref * Math.sqrt(Math.PI) },
         { label: 'π²',                          value: ref * Math.PI ** 2       },
@@ -258,21 +256,19 @@
         { label: 'Rayon (si ref = périmètre)', value: ref / (2 * Math.PI)      }
       ];
 
-      // Construction du HTML des sections
       let html = '';
       function renderSection(title, items) {
-        html += `<div class=\"section\"><div class=\"section-title\">${title}</div>`;
+        html += `<div class="section"><div class="section-title">${title}</div>`;
         items.forEach(it => {
-          html += `<div class=\"value-row\">` +
-                  `<span class=\"value-original\">${it.label}</span>` +
-                  `<span class=\"arrow\">→</span>` +
-                  `<span class=\"value-scaled\">${formatFr(it.value * factor)}</span>` +
-                  `</div>`;
+          html += `<div class="value-row">
+            <span class="value-original">${it.label}</span>
+            <span class="arrow">→</span>
+            <span class="value-scaled">${formatFr(it.value * factor)}</span>
+          </div>`;
         });
-        html += '</div>';        
+        html += '</div>';
       }
 
-      // Affichage des sections
       if (extras.length) renderSection('Valeurs personnalisées', extras.map(v => ({ label: v, value: v })));
       renderSection('Fractions simples', fractions);
       renderSection('Multiples simples (×1→×10)', multiples);
@@ -282,14 +278,12 @@
       renderSection('Multiples de π (pi)', [...multiplesPi, ...piExtras]);
       renderSection('Racines & puissances', [...racines, ...puissances]);
 
-      // Injection du HTML et affichage de la carte
       output.innerHTML = html;
       resultCard.style.display = 'block';
     }
 
-    // Événements d'entrée pour recalcul automatique
     [refInput, targetInput, extraInput].forEach(el => el.addEventListener('input', update));
-    window.onload = update; // Calcul initial au chargement
+    window.onload = update;
   </script>
 </body>
 </html>
