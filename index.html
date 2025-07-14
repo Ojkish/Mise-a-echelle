@@ -52,6 +52,12 @@
       font-size: 1rem;
       transition: all 0.2s ease;
       background: #fafafa;
+
+    /* Activer le clavier numérique sur mobile */
+    input[type="number"] {
+      inputmode: decimal;
+      pattern: "[0-9]*[.,]?[0-9]*";
+    }
     }
     input:focus, textarea:focus {
       outline: none;
