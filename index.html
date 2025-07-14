@@ -46,8 +46,7 @@
     }
 
     /* Champs de saisie texte et numérique */
-    input,
-    textarea {
+    input {
       width: 100%;
       padding: 0.75rem;
       border: 2px solid #e5e7eb;
@@ -55,18 +54,52 @@
       font-size: 1rem;
       transition: all 0.2s ease;
       background: #fafafa;
-    }
-    input[type="number"],
-    textarea {
       inputmode: decimal;
       pattern: "[0-9]*[.,]?[0-9]*";
     }
-    input:focus,
-    textarea:focus {
+    input:focus {
       outline: none;
       border-color: #2563eb;
       background: white;
       box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+
+    /* === Styles pour les valeurs personnalisées === */
+    .custom-values-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .custom-input-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .custom-input {
+      flex: 1;
+      min-width: 0;
+    }
+    .remove-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .remove-btn:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+    .remove-btn:active {
+      transform: scale(0.95);
     }
 
     /* === Carte des résultats === */
@@ -132,6 +165,8 @@
       .value-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
       .arrow { display: none; }
       .value-scaled { align-self: flex-end; font-size: 1.2rem; }
+      .custom-input-row { flex-direction: column; align-items: stretch; }
+      .remove-btn { align-self: flex-end; margin-top: 0.5rem; }
     }
   </style>
 </head>
@@ -144,17 +179,19 @@
     <!-- Taille référence -->
     <div class="input-group">
       <label for="target">Taille de référence</label>
-      <input type="number" id="target" value="100" onfocus="this.select()" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*">
+      <input type="number" id="target" value="100" onfocus="this.select()">
     </div>
     <!-- Taille affichée mesurée -->
     <div class="input-group">
       <label for="ref">Taille affichée</label>
-      <input type="number" id="ref" value="150" onfocus="this.select()" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*">
+      <input type="number" id="ref" value="150" onfocus="this.select()">
     </div>
-    <!-- Valeurs personnalisées optionnelles -->
+    <!-- Valeurs personnalisées -->
     <div class="input-group">
-      <label for="extra">Valeurs personnalisées (une par ligne)</label>
-      <textarea id="extra" rows="4" placeholder="12,5&#10;35&#10;60" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*"></textarea>
+      <label>Valeurs personnalisées</label>
+      <div class="custom-values-container" id="customValuesContainer">
+        <!-- Les champs seront ajoutés dynamiquement -->
+      </div>
     </div>
   </div>
 
@@ -173,10 +210,97 @@
     // Références vers les champs HTML
     const refInput = document.getElementById('ref');
     const targetInput = document.getElementById('target');
-    const extraInput = document.getElementById('extra');
+    const customValuesContainer = document.getElementById('customValuesContainer');
     const output = document.getElementById('output');
     const resultCard = document.getElementById('resultCard');
     const transformationBadge = document.getElementById('transformationBadge');
+
+    // Gestion des valeurs personnalisées
+    let customInputCounter = 0;
+
+    function createCustomInput(value = '') {
+      const row = document.createElement('div');
+      row.className = 'custom-input-row';
+      row.dataset.id = customInputCounter++;
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.className = 'custom-input';
+      input.value = value;
+      input.placeholder = 'Entrez une valeur...';
+      input.onfocus = function() { this.select(); };
+      
+      // Événement pour gérer l'ajout automatique d'un nouveau champ
+      input.addEventListener('input', function() {
+        update();
+        
+        // Si c'est le dernier champ et qu'il contient une valeur, ajouter un nouveau champ
+        if (this.parentElement === customValuesContainer.lastElementChild && this.value.trim()) {
+          addCustomInput();
+        }
+        
+        // Si le champ est vide et qu'il y a plus d'un champ, le supprimer automatiquement
+        // (sauf si c'est le dernier champ)
+        if (!this.value.trim() && customValuesContainer.children.length > 1 && 
+            this.parentElement !== customValuesContainer.lastElementChild) {
+          setTimeout(() => {
+            if (!this.value.trim()) {
+              removeCustomInput(this.parentElement);
+            }
+          }, 500);
+        }
+      });
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.innerHTML = '×';
+      removeBtn.title = 'Supprimer cette valeur';
+      removeBtn.onclick = function() {
+        removeCustomInput(row);
+      };
+
+      row.appendChild(input);
+      row.appendChild(removeBtn);
+      
+      return row;
+    }
+
+    function addCustomInput(value = '') {
+      const inputRow = createCustomInput(value);
+      customValuesContainer.appendChild(inputRow);
+      
+      // Masquer le bouton de suppression s'il n'y a qu'un seul champ
+      updateRemoveButtons();
+      
+      return inputRow.querySelector('input');
+    }
+
+    function removeCustomInput(row) {
+      if (customValuesContainer.children.length > 1) {
+        row.remove();
+        updateRemoveButtons();
+        update();
+      }
+    }
+
+    function updateRemoveButtons() {
+      const removeButtons = customValuesContainer.querySelectorAll('.remove-btn');
+      removeButtons.forEach(btn => {
+        btn.style.display = customValuesContainer.children.length > 1 ? 'flex' : 'none';
+      });
+    }
+
+    function getCustomValues() {
+      const inputs = customValuesContainer.querySelectorAll('.custom-input');
+      const values = [];
+      inputs.forEach(input => {
+        const value = parseFloat(input.value.replace(',', '.'));
+        if (!isNaN(value)) {
+          values.push(value);
+        }
+      });
+      return values;
+    }
 
     // Fonction principale de mise à jour des résultats
     function update() {
@@ -196,11 +320,8 @@
       // Affiche le facteur en pourcentage
       transformationBadge.textContent = `Transformation : ${formatFr(factor * 100)}%`;
 
-      // Analyse les valeurs personnalisées
-      const extras = extraInput.value
-        .split('\n')
-        .map(line => parseFloat(line.trim().replace(',', '.')))
-        .filter(v => !isNaN(v));
+      // Récupère les valeurs personnalisées
+      const extras = getCustomValues();
 
       // Définition des séries affichées
       const fractions = [
@@ -208,7 +329,9 @@
         { label: '1/10', value: ref / 10 },
         { label: '1/8',  value: ref / 8  },
         { label: '1/4',  value: ref / 4  },
-        { label: '1/2',  value: ref / 2  }
+        { label: '1/2',  value: ref / 2  },
+        { label: '1/3',  value: ref / 3  },
+        { label: '2/3',  value: ref * 2 / 3 }
       ];
 
       const multiples = Array.from({ length: 10 }, (_, i) => ({
@@ -290,7 +413,7 @@
       }
 
       // Affichage des différentes sections de résultat
-      if (extras.length) renderSection('Valeurs personnalisées', extras.map(v => ({ label: v, value: v })));
+      if (extras.length) renderSection('Valeurs personnalisées', extras.map(v => ({ label: formatFr(v), value: v })));
       renderSection('Fractions simples', fractions);
       renderSection('Multiples simples (×1→×10)', multiples);
       renderSection('Pourcentages', pourcentages);
@@ -305,11 +428,16 @@
     }
 
     // Évènements pour réagir automatiquement aux changements
-    [refInput, targetInput, extraInput].forEach(el => el.addEventListener('input', update));
+    [refInput, targetInput].forEach(el => el.addEventListener('input', update));
 
-    // Mise à jour initiale au chargement
-    window.onload = update;
+    // Initialisation
+    window.onload = function() {
+      // Ajouter le premier champ personnalisé
+      addCustomInput();
+      // Mise à jour initiale
+      update();
+    };
   </script>
 </body>
 </html>
- <!-- Sylvain Rausa -->
+<!-- Sylvain Rausa - Version améliorée -->
