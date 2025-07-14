@@ -5,26 +5,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Outil de Mise à l'Échelle</title>
   <style>
+    /* === Styles globaux === */
     * { box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; max-width: 700px; margin: 0 auto; padding: 1.5rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh; line-height: 1.6; }
-    .header { text-align: center; margin-bottom: 2rem; }
-    .header h1 { color: #1e293b; font-size: 2rem; font-weight: 700; margin: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-    .card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06); padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(226,232,240,0.8); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* === En-tête === */
+    .header h1 {
+      text-align: center;
+      color: #1e293b;
+      font-size: 2rem;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    /* === Carte d'entrée === */
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(226,232,240,0.8);
+    }
     .input-group { margin-bottom: 1.25rem; }
-    label { display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; font-size: 0.95rem; }
-    input, textarea { width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1rem; transition: all 0.2s ease; background: #fafafa; }
-    input:focus, textarea:focus { outline: none; border-color: #2563eb; background: white; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-    .result-card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06); overflow: hidden; border: 1px solid rgba(226,232,240,0.8); display: none; }
-    .transformation-badge { background: linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%); color: white; padding: 1.25rem; text-align: center; font-size: 1.25rem; font-weight: 700; margin: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+    label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: #fafafa;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+
+    /* === Carte des résultats === */
+    .result-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      border: 1px solid rgba(226,232,240,0.8);
+      overflow: hidden;
+      display: none; /* Cachée par défaut */
+    }
+    .transformation-badge {
+      background: linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+      color: white;
+      padding: 1.25rem;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
     .results-content { padding: 1.5rem; }
+
+    /* === Sections et lignes de résultats === */
     .section { margin-bottom: 1.5rem; }
-    .section-title { font-weight: 700; color: #374151; margin-bottom: 0.75rem; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .section-title::before { content: ''; width: 4px; height: 20px; background: linear-gradient(to bottom,#2563eb,#1d4ed8); border-radius: 2px; }
-    .value-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; margin-bottom: 0.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; transition: all 0.2s ease; }
+    .section-title {
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(to bottom,#2563eb,#1d4ed8);
+      border-radius: 2px;
+    }
+    .value-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
     .value-row:hover { background: #f1f5f9; border-color: #cbd5e1; }
     .value-original { color: #64748b; font-weight: 500; }
     .arrow { color: #94a3b8; font-weight: bold; margin: 0 0.5rem; }
     .value-scaled { font-weight: 700; color: #2563eb; font-size: 1.1rem; }
+
+    /* === Adaptation mobile === */
     @media (max-width: 640px) {
       body { padding: 1rem; }
       .header h1 { font-size: 1.75rem; }
@@ -37,7 +127,10 @@
   </style>
 </head>
 <body>
+  <!-- === En-tête de l'application === -->
   <div class="header"><h1>Outil de Mise à l'Échelle</h1></div>
+
+  <!-- === Entrées utilisateur === -->
   <div class="card">
     <div class="input-group">
       <label for="target">Taille de référence</label>
@@ -52,9 +145,19 @@
       <textarea id="extra" rows="4" placeholder="12.5&#10;35&#10;60"></textarea>
     </div>
   </div>
-  <div class="result-card" id="resultCard"><div class="transformation-badge" id="transformationBadge"></div><div class="results-content" id="output"></div></div>
+
+  <!-- === Affichage des résultats (caché par défaut) === -->
+  <div class="result-card" id="resultCard">
+    <div class="transformation-badge" id="transformationBadge"></div>
+    <div class="results-content" id="output"></div>
+  </div>
 
   <script>
+    /**
+     * formatFr : formate un nombre en notation française
+     * - minimumFractionDigits: nombre minimal de décimales
+     * - maximumFractionDigits: nombre maximal de décimales
+     */
     function formatFr(value) {
       return value.toLocaleString('fr-FR', {
         minimumFractionDigits: 0,
@@ -62,6 +165,7 @@
       });
     }
 
+    // Sélection des éléments DOM
     const refInput = document.getElementById('ref');
     const targetInput = document.getElementById('target');
     const extraInput = document.getElementById('extra');
@@ -69,18 +173,33 @@
     const resultCard = document.getElementById('resultCard');
     const transformationBadge = document.getElementById('transformationBadge');
 
+    /**
+     * update : fonction principale de recalcul et affichage
+     */
     function update() {
+      // Lecture des valeurs utilisateur
       const ref = parseFloat(refInput.value);
       const target = parseFloat(targetInput.value);
-      if (!ref || !target || ref <= 0) { resultCard.style.display = 'none'; return; }
+      
+      // Si valeurs invalides, on masque le résultat
+      if (!ref || !target || ref <= 0) {
+        resultCard.style.display = 'none';
+        return;
+      }
+
+      // Calcul du facteur de transformation
       const factor = target / ref;
 
+      // Mise à jour du badge de transformation
       transformationBadge.textContent = `Transformation : ${formatFr(factor * 100)}%`;
 
-      const extras = extraInput.value.split('\n')
-        .map(l => parseFloat(l.trim()))
+      // Lecture et filtrage des valeurs personnalisées
+      const extras = extraInput.value
+        .split('\n')
+        .map(line => parseFloat(line.trim()))
         .filter(v => !isNaN(v));
 
+      // Définition des différentes séries géométriques
       const fractions = [
         { label: '1/20', value: ref / 20 },
         { label: '1/10', value: ref / 10 },
@@ -107,7 +226,6 @@
       ];
       const φ = (1 + Math.sqrt(5)) / 2;
       const π = Math.PI;
-
       const racines = [
         { label: '√2', value: ref * Math.SQRT2 },
         { label: '√3', value: ref * Math.sqrt(3) }
@@ -135,22 +253,22 @@
         { label: 'Rayon (si ref = périmètre)', value: ref / (2 * Math.PI)      }
       ];
 
+      // Construction du HTML des sections
       let html = '';
       function renderSection(title, items) {
-        html += `<div class="section"><div class="section-title">${title}</div>`;
+        html += `<div class=\"section\"><div class=\"section-title\">${title}</div>`;
         items.forEach(it => {
-          html += `<div class="value-row">` +
-                  `<span class="value-original">${it.label}</span>` +
-                  `<span class="arrow">→</span>` +
-                  `<span class="value-scaled">${formatFr(it.value * factor)}</span>` +
+          html += `<div class=\"value-row\">` +
+                  `<span class=\"value-original\">${it.label}</span>` +
+                  `<span class=\"arrow\">→</span>` +
+                  `<span class=\"value-scaled\">${formatFr(it.value * factor)}</span>` +
                   `</div>`;
         });
-        html += '</div>';
+        html += '</div>';        
       }
 
-      if (extras.length) {
-        renderSection('Valeurs personnalisées', extras.map(v => ({ label: v, value: v })));
-      }
+      // Affichage des sections
+      if (extras.length) renderSection('Valeurs personnalisées', extras.map(v => ({ label: v, value: v })));
       renderSection('Fractions simples', fractions);
       renderSection('Multiples simples (×1→×10)', multiples);
       renderSection('Pourcentages', pourcentages);
@@ -159,12 +277,14 @@
       renderSection('Multiples de π (pi)', [...multiplesPi, ...piExtras]);
       renderSection('Racines & puissances', [...racines, ...puissances]);
 
+      // Injection du HTML et affichage de la carte
       output.innerHTML = html;
       resultCard.style.display = 'block';
     }
 
+    // Événements d'entrée pour recalcul automatique
     [refInput, targetInput, extraInput].forEach(el => el.addEventListener('input', update));
-    window.onload = update;
+    window.onload = update; // Calcul initial au chargement
   </script>
 </body>
 </html>
